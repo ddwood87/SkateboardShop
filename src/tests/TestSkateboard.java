@@ -13,36 +13,32 @@ import models.*;
  */
 public class TestSkateboard {
 	Skateboard testSkate = new Skateboard();
-	SkateDeck testDeck = new SkateDeck("<ShopName>", 8.25);
-	//SkateWheel
-	//SkateTruck
-	//SkateBearing
-	String toStringOut = "\nDeck: <ShopName>, 8.25\"";
-	
+	String testDeck = "DECK";
+	String testWheel = "WHEEL";
+	String testTruck = "TRUCK";
+	String toStringOut;	
 	@Before
 	public void setUp() throws Exception {
+		testSkate.setDeckBrand(testDeck);
+		testSkate.setWheelBrand(testWheel);
+		testSkate.setTruckBrand(testTruck);
+	}
+	@Test
+	public void testToString() {		
+		toStringOut ="ID: " + testSkate.getId();
+		toStringOut += ", Deck: " + testSkate.getDeckBrand();
+		toStringOut += ", Wheel: " + testSkate.getWheelBrand();
+		toStringOut += ", Truck: " + testSkate.getTruckBrand();
 		
-	}
-
-	@Test
-	public void testAddPart_deck() {
-		assertNull(testSkate.getDeck());
-		testSkate.addPart(testDeck);
-		assertNotNull(testSkate.getDeck());
-	}
-	
-	@Test
-	public void testRemoveDeck() {
-		testSkate.addPart(testDeck);
-		assertNotNull(testSkate.getDeck());
-		testSkate.removeDeck();
-		assertNull(testSkate.getDeck());
-	}
-	@Test
-	public void testToString() {
-		testSkate.addPart(testDeck);
 		assertEquals(toStringOut, testSkate.toString());
 	}
-	
-
+	@Test
+	public void testEquals_differentIds() {
+		Skateboard skate = new Skateboard(testSkate.getDeckBrand(), testSkate.getWheelBrand(), testSkate.getTruckBrand());
+		
+		skate.setId(1);
+		testSkate.setId(2);
+		
+		assertTrue(skate.equals(testSkate));
+	}
 }

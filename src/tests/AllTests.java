@@ -10,7 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * Sep 2, 2022
  */
 @RunWith(Suite.class)
-@SuiteClasses({ TestSkateboard.class, TestSkateDeck.class })
+@SuiteClasses({ TestSkateHelper.class, TestSkateboard.class })
 public class AllTests {
 	
 }
