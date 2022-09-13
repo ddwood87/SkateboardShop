@@ -16,9 +16,9 @@ import models.Skateboard;
  */
 public class SkateHelper {
 	private static EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("SkateboardShop");
-	public SkateHelper() {
-		
-	}
+	
+	public SkateHelper() {	}
+	
 	public boolean skateExists(Skateboard skate) {
 		EntityManager em = emfactory.createEntityManager();
 		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand = :deck "
@@ -35,9 +35,7 @@ public class SkateHelper {
 		if(sl.size() == 0) {return false;}
 		else { return true; }
 	}
-	/**
-	 * @param testSkate
-	 */
+	
 	public void addSkate(Skateboard skate) {		
 		
 		//Add new skate when it doesn't exist
@@ -47,16 +45,12 @@ public class SkateHelper {
 			em.persist(skate);
 			em.getTransaction().commit();
 			em.close();
-			System.out.println("Skateboard added");
 		}else {
 			// no action if there is an existing skate with matching properties.
 			System.out.println("The entered skateboard already exists.");			
 		}
 	}
 
-	/**
-	 * @param testSkate
-	 */
 	public void deleteSkate(Skateboard deleteSkate) {
 		EntityManager em = emfactory.createEntityManager();
 				
@@ -69,71 +63,6 @@ public class SkateHelper {
 		em.close();
 	}
 
-	/**
-	 * @return
-	 */
-	public List<Skateboard> listAllSkates() {
-		EntityManager em = emfactory.createEntityManager();
-		List<Skateboard> sl = em.createQuery("SELECT s FROM Skateboard s", Skateboard.class).getResultList();
-		return sl;
-	}
-
-	/**
-	 * @return
-	 */
-	public List<Skateboard> getSkateByDeck(String deck) {
-		EntityManager em = emfactory.createEntityManager();
-		TypedQuery<Skateboard> queryDeck = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand = :deck", Skateboard.class);
-		queryDeck.setParameter("deck", deck);
-		List<Skateboard> sl = queryDeck.getResultList();
-		return sl;
-	}
-
-	/**
-	 * @param testWheel
-	 * @return
-	 */
-	public List<Skateboard> getSkateByWheel(String wheel) {
-		EntityManager em = emfactory.createEntityManager();
-		TypedQuery<Skateboard> queryWheel = em.createQuery("SELECT s FROM Skateboard s WHERE s.wheelBrand = :wheel", Skateboard.class);
-		queryWheel.setParameter("wheel", wheel);
-		List<Skateboard> sl = queryWheel.getResultList();
-		return sl;
-	}
-
-	/**
-	 * @param testTruck
-	 * @return
-	 */
-	public List<Skateboard> getSkateByTruck(String truck) {
-		EntityManager em = emfactory.createEntityManager();
-		TypedQuery<Skateboard> queryTruck = em.createQuery("SELECT s FROM Skateboard s WHERE s.truckBrand = :truck", Skateboard.class);
-		queryTruck.setParameter("truck", truck);
-		List<Skateboard> sl = queryTruck.getResultList();
-		return sl;
-	}
-
-	/**
-	 * @return
-	 */
-	public Skateboard getSkateById(int id) {
-		EntityManager em = emfactory.createEntityManager();
-		TypedQuery<Skateboard> queryId = em.createQuery("SELECT s FROM Skateboard s WHERE s.id = :id", Skateboard.class);
-		queryId.setParameter("id", id);
-		List<Skateboard> list = queryId.getResultList();
-		Skateboard s;
-		if(list.size()> 1)
-		{
-			//error condition
-		}
-		if(list.size()==1) { s = list.get(0); }
-		else {s = null;}
-		return s;
-	}
-
-	/**
-	 * @param addResult
-	 */
 	public Skateboard updateSkate(Skateboard updatedSkate) {
 		EntityManager em = emfactory.createEntityManager();
 		if(!skateExists(updatedSkate)) {
@@ -149,6 +78,52 @@ public class SkateHelper {
 			return existing;
 		}
 	}
+	
+	public List<Skateboard> listAllSkates() {
+		EntityManager em = emfactory.createEntityManager();
+		List<Skateboard> sl = em.createQuery("SELECT s FROM Skateboard s", Skateboard.class).getResultList();
+		return sl;
+	}
+
+	public List<Skateboard> getSkateByDeck(String deck) {
+		EntityManager em = emfactory.createEntityManager();
+		TypedQuery<Skateboard> queryDeck = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand = :deck", Skateboard.class);
+		queryDeck.setParameter("deck", deck);
+		List<Skateboard> sl = queryDeck.getResultList();
+		return sl;
+	}
+
+	public List<Skateboard> getSkateByWheel(String wheel) {
+		EntityManager em = emfactory.createEntityManager();
+		TypedQuery<Skateboard> queryWheel = em.createQuery("SELECT s FROM Skateboard s WHERE s.wheelBrand = :wheel", Skateboard.class);
+		queryWheel.setParameter("wheel", wheel);
+		List<Skateboard> sl = queryWheel.getResultList();
+		return sl;
+	}
+
+	public List<Skateboard> getSkateByTruck(String truck) {
+		EntityManager em = emfactory.createEntityManager();
+		TypedQuery<Skateboard> queryTruck = em.createQuery("SELECT s FROM Skateboard s WHERE s.truckBrand = :truck", Skateboard.class);
+		queryTruck.setParameter("truck", truck);
+		List<Skateboard> sl = queryTruck.getResultList();
+		return sl;
+	}
+
+	public Skateboard getSkateById(int id) {
+		EntityManager em = emfactory.createEntityManager();
+		TypedQuery<Skateboard> queryId = em.createQuery("SELECT s FROM Skateboard s WHERE s.id = :id", Skateboard.class);
+		queryId.setParameter("id", id);
+		List<Skateboard> list = queryId.getResultList();
+		Skateboard s;
+		if(list.size()> 1)
+		{
+			//error condition
+		}
+		if(list.size()==1) { s = list.get(0); }
+		else {s = null;}
+		return s;
+	}
+
 	private Skateboard getExisting(Skateboard existingSkate) {
 		EntityManager em = emfactory.createEntityManager();
 		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand = :deck "
@@ -159,29 +134,7 @@ public class SkateHelper {
 		Skateboard s = query.getSingleResult();
 		return s;
 	}
-	public List<String> getSearchTerms(String search){
-		List<String> terms = new ArrayList<String>();
-			do{
-				String term;
-				search = search.trim();	
-				if(search.length() > 0) {				
-					if ( search.contains(" ")) {
-						int index = search.indexOf(" ");
-						term = search.substring(0, index); // get the first term
-						
-						//remove first term from search string
-						//include leading space to trigger last term to loop.
-						search = search.substring(index); 
-					}else { term = search; }
-					terms.add(term); //add term to searches list
-				}
-			}while(search.contains(" "));
-			return terms;
-	}
-	/**
-	 * @param search
-	 * @return
-	 */
+	
 	public List<Skateboard> searchByBrand(String search) {
 		//search = search.trim();
 		List<String> searches = getSearchTerms(search);
@@ -214,11 +167,28 @@ public class SkateHelper {
 		}else { list = listAllSkates(); }		
 		return list;
 	}
-	/**
-	 * 
-	 */
+	
+	public List<String> getSearchTerms(String search){
+		List<String> terms = new ArrayList<String>();
+		do{
+			String term;
+			search = search.trim();	
+			if(search.length() > 0) {				
+				if ( search.contains(" ")) {
+					int index = search.indexOf(" ");
+					term = search.substring(0, index); // get the first term
+				
+					//remove first term from search string
+					//include leading space to trigger last term to loop.
+					search = search.substring(index); 
+				}else { term = search; }
+					terms.add(term); //add term to searches list
+				}
+			}while(search.contains(" "));
+			return terms;
+	}
+
 	public void cleanUp() {
 		emfactory.close();		
-	}
-	
+	}	
 }

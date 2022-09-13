@@ -83,6 +83,7 @@ public class Skateboard {
 		result += ", Truck: " + truckBrand;
 		return result;
 	}
+	
 	@Override
 	public boolean equals(Object o) {
 		boolean result = false;

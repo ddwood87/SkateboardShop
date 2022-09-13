@@ -10,10 +10,6 @@ import org.junit.runner.notification.Failure;
  * Sep 2, 2022
  */
 public class TestRunner {
-
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		Result result = JUnitCore.runClasses(AllTests.class);
 		for (Failure failure : result.getFailures()) {
@@ -21,5 +17,4 @@ public class TestRunner {
 		}
 		System.out.println( result.wasSuccessful() ? "All tests passed." : "Tests failed." );
 	}
-
 }

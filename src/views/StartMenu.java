@@ -58,6 +58,7 @@ public class StartMenu {
 			}
 		}
 	}
+	
 	private static void addAnItem(){
 		System.out.print("Enter the deck brand: ");
 		String deck = scan.nextLine();
@@ -67,6 +68,7 @@ public class StartMenu {
 		String truck = scan.nextLine();
 		Skateboard skate = new Skateboard(deck, wheel, truck);
 		sh.addSkate(skate);
+		System.out.println("Skateboard added");
 	}
 	
 	private static void deleteAnItem() {
@@ -76,7 +78,6 @@ public class StartMenu {
 		Skateboard s = sh.getSkateById(id);
 		sh.deleteSkate(s);
 		System.out.println(s.toString() + " has been deleted.");
-		
 	}
 	
 	private static void editAnItem() {
@@ -130,6 +131,7 @@ public class StartMenu {
 			System.out.println(s.toString());
 		}
 	}
+	
 	private static int getIntInput() {
 		while(!scan.hasNextInt()) {
 			System.out.print("Enter a number: ");
@@ -137,6 +139,7 @@ public class StartMenu {
 		}
 		return scan.nextInt();
 	}
+	
 	private static void searchSkateboards() {
 		List<Skateboard> searchResult;
 		System.out.println("Search to find a skateboard: ");
@@ -149,11 +152,13 @@ public class StartMenu {
 		}
 		printSkateboards(searchResult);
 	}
+	
 	private static void printSkateboards(List<Skateboard> list) {
 		for(Skateboard s : list){
 			System.out.println(s.toString());
 		}
 	}
+	
 	private static void printSkateboards() {
 		printSkateboards(sh.listAllSkates());
 	}
