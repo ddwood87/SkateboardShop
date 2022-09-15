@@ -4,11 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -97,18 +92,18 @@ public class Skateboard {
 			return false;
 		}
 		Skateboard skate = (Skateboard)o;
-		if(deckBrand != null && skate.deckBrand != null) {
-			if(deckBrand == skate.deckBrand) {
+		if(this.deckBrand != null && skate.deckBrand != null) {
+			if(this.deckBrand == skate.deckBrand) {
 				result = true;			
 			} else { return false; }
 		}
-		if(wheelBrand != null && skate.wheelBrand != null) {
-			if(wheelBrand == skate.wheelBrand) {
+		if(this.wheelBrand != null && skate.wheelBrand != null) {
+			if(this.wheelBrand == skate.wheelBrand) {
 				result = true;			
 			} else { return false; }
 		}
-		if(truckBrand != null && skate.truckBrand != null) {
-			if(truckBrand == skate.truckBrand) {
+		if(this.truckBrand != null && skate.truckBrand != null) {
+			if(this.truckBrand == skate.truckBrand) {
 				result = true;			
 			} else { return false; }
 		}

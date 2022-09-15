@@ -28,10 +28,12 @@ public class TestSkateHelper {
 	private String testDeck = "DECK";
 	private String testWheel = "WHEEL";
 	private String testTruck = "TRUCK";
-	private SkateHelper sh;
 	private Skateboard testSkate;
+	
 	EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("SkateboardShop");
 	EntityManager em = emfactory.createEntityManager();
+	private SkateHelper sh;
+	
 	TypedQuery<Skateboard> deckQuery;
 	TypedQuery<Skateboard> idQuery;
 	TypedQuery<Skateboard> allQuery;

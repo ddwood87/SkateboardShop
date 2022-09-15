@@ -30,7 +30,7 @@ public class SkateHelper {
 		em.close();
 		
 		if(sl.size() > 1) {
-			//error condition
+			//error condition, delete duplicate?
 		}
 		if(sl.size() == 0) {return false;}
 		else { return true; }
@@ -136,7 +136,6 @@ public class SkateHelper {
 	}
 	
 	public List<Skateboard> searchByBrand(String search) {
-		//search = search.trim();
 		List<String> searches = getSearchTerms(search);
 		List<Skateboard> list = new ArrayList<Skateboard>();
 		
@@ -149,17 +148,21 @@ public class SkateHelper {
 				query.setParameter("search", term);
 				list.addAll(query.getResultList());		
 			}		
+			
 			List<Integer> ids = new ArrayList<>();
 			List<Integer> delIndex = new ArrayList<>();
 			int index = 0;
+			
+			//track a list of ids encountered in the list and mark
+			//duplicates for removal.
 			for(Skateboard s : list) {
 				if(ids.contains(s.getId())){
-					delIndex.add(index);
+					delIndex.add(index);					
 				} else { ids.add(s.getId()); }
 				index++;
 			}
 			if(delIndex.size() > 0) {
-				//remove duplicate entries in reverse order.
+				//remove duplicate results in reverse order to keep indices aligned
 				for(int i = delIndex.size()-1; i >= 0; i--) {
 					list.remove((int)delIndex.get(i));
 				}
