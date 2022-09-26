@@ -79,6 +79,10 @@ public class Skateboard {
 		return result;
 	}
 	
+	/**
+	 * Checks that another object has the same properties as this skateboard.
+	 * True if the same, false if any difference. Ignores Id value.
+	 */
 	@Override
 	public boolean equals(Object o) {
 		boolean result = false;

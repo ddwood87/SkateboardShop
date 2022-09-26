@@ -1,0 +1,83 @@
+@charset "ISO-8859-1";
+@font-face{
+	font-family: chalk;
+	src: url(chalk.otf);
+}
+body{
+	display: flex;
+	flex-direction: column;
+	max-width: 600px;
+	font-family: chalk;
+	font-size: 20px;
+}
+h1{
+	border-radius: 60px 60px 0 0;
+	border: 3px solid #ccaaaa;
+	background-color: #bb2222;
+	font-size: 50px;
+	margin: 15px 15px 0 15px;
+	padding: 15px 15px 5px 15px;
+	text-align: center;
+}
+nav{
+	display: flex;
+	justify-content: space-around;
+	margin: 0 15px 15px 15px;
+	padding: 10px;
+	background-color: #aaaacc;
+	border-radius: 0 0 60px 60px;
+	
+}
+nav a {
+	margin: 0;
+	padding: 10px;
+	border: 1px solid #8888aa;
+	border-radius: 20px;	
+	text-decoration: none;
+	background-color: #ccccff;
+	font-family: Verdana, sans-serif;
+	font-size: 15px;
+}
+nav a:hover {
+	text-decoration: underline;
+}
+form {
+	display: flex;
+	flex-direction: column;
+	max-width: 400px;
+	align-self: center;
+	font-size: 25px;
+}
+form p.form-title{
+	align-self: center;
+}
+form div{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+form div input{
+	align-self: flex-end;
+}
+table, td{
+	border: 1px solid black;
+	padding: 3px;
+	font-family: Verdana, sans-serif;
+	font-size: 15px;
+}
+table th{
+	font-family: chalk;
+	font-size: 30px;
+}
+div.details-container{
+	display: flex;
+	justify-content: flex-start;
+	
+}
+div.details-labels, div.details{
+	display: flex;
+	flex-direction: column;	
+}
+div.details-labels ul li{
+	text-align: right;
+}

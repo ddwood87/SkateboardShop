@@ -8,7 +8,6 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import models.Skateboard;
-
 /**
  * @author dominicwood - ddwood2@dmacc.edu
  * CIS175 - Fall 2022
@@ -19,6 +18,11 @@ public class SkateHelper {
 	
 	public SkateHelper() {	}
 	
+	/**
+	 * Check if a skateboard exists in Persistence
+	 * @param skate
+	 * @return boolean true if DB has skateboard with same properties
+	 */
 	public boolean skateExists(Skateboard skate) {
 		EntityManager em = emfactory.createEntityManager();
 		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand = :deck "
@@ -65,18 +69,19 @@ public class SkateHelper {
 
 	public Skateboard updateSkate(Skateboard updatedSkate) {
 		EntityManager em = emfactory.createEntityManager();
-		if(!skateExists(updatedSkate)) {
+		Skateboard result;
+		//if skate exists, delete updatedSkate, return existing
+		if(skateExists(updatedSkate)) {
+			result = getExisting(updatedSkate);
+			deleteSkate(updatedSkate);
+		} else {
 			em.getTransaction().begin();
 			em.merge(updatedSkate);
 			em.getTransaction().commit();
 			em.close();	
-			return updatedSkate;
-		} else {
-			//if update will create duplicate, delete the old skate
-			Skateboard existing = getExisting(updatedSkate);
-			deleteSkate(updatedSkate);
-			return existing;
+			result = updatedSkate;
 		}
+		return result;
 	}
 	
 	public List<Skateboard> listAllSkates() {
@@ -171,6 +176,20 @@ public class SkateHelper {
 		return list;
 	}
 	
+	public List<Skateboard> searchByPartBrand(String deck, String wheel, String truck) {
+		EntityManager em = emfactory.createEntityManager();
+		deck = "%" + deck.trim() + "%";
+		wheel = "%" + wheel.trim() + "%";
+		truck = "%" + truck.trim() + "%";
+		//String queryString;
+		List<Skateboard> list = new ArrayList<Skateboard>();
+		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand LIKE :deck AND s.wheelBrand LIKE :wheel AND s.truckBrand LIKE :truck", Skateboard.class);
+		query.setParameter("deck", deck);
+		query.setParameter("wheel", wheel);
+		query.setParameter("truck", truck);
+		list.addAll(query.getResultList());
+		return list;
+	}
 	public List<String> getSearchTerms(String search){
 		List<String> terms = new ArrayList<String>();
 		do{
