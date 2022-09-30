@@ -13,7 +13,7 @@
 <h1>Skateboard Detail</h1>
 
 <nav>
-<a href="index.jsp">Home</a>
+<a href="index.html">Home</a>
 <a href="skatelist">List Skateboards</a>
 <a href="editskate">Add a Skateboard</a>
 </nav>
