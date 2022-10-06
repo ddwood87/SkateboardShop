@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" href="skateshop.css">
+<title>Skateboard Shop</title>
+</head>
+<body>
+
+<h1>Welcome to the Skateboard Shop</h1>
+
+<nav>
+<a href="deckindex.html">Home</a>
+<a href="index.html">Boards</a>
+<a href="skatedecklist">List Decks</a>
+<a href="editskatedeck">Add a Deck</a>
+</nav>
+<a href="entitylist">List all entities</a>
+<form action="skatedecklist" method="post">
+	<p class="form-title">Search for a skateboard deck:</p>
+	<div><label for="searchbrand">Brand</label>
+	<input type="text" name="searchbrand" placeholder="Deck Brand"/></div>
+	<div><label for="searchwidth">Width</label>
+	<input type="number" name="searchwidth" placeholder="Deck Width" min="7" max="10" step=".05"/></div>
+	<input type="submit" value="Search"/>
+</form>
+
+</body>
+</html>

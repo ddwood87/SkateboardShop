@@ -1,9 +1,14 @@
 package models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -19,8 +24,9 @@ public class Skateboard {
 	@Column(name="ID")
 	private int id;
 	
-	@Column(name="DECK")
-	private String deckBrand;
+	@ManyToOne(cascade={CascadeType.MERGE})
+	@JoinColumn(name ="SkateDeck_id")
+	private SkateDeck deck;
 	
 	@Column(name="WHEEL")
 	private String wheelBrand;
@@ -32,9 +38,9 @@ public class Skateboard {
 		super();
 	}
 	
-	public Skateboard(String deckBrand, String wheelBrand, String truckBrand) {
+	public Skateboard(SkateDeck deck, String wheelBrand, String truckBrand) {
 		super();
-		this.deckBrand = deckBrand;
+		this.deck = deck;
 		this.wheelBrand = wheelBrand;
 		this.truckBrand = truckBrand;
 	}
@@ -47,12 +53,12 @@ public class Skateboard {
 		this.id = id;
 	}
 
-	public String getDeckBrand() {
-		return deckBrand;
+	public SkateDeck getDeck() {
+		return deck;
 	}
 
-	public void setDeckBrand(String deckBrand) {
-		this.deckBrand = deckBrand;
+	public void setDeck(SkateDeck deck) {
+		this.deck = deck;
 	}
 
 	public String getWheelBrand() {
@@ -73,7 +79,7 @@ public class Skateboard {
 
 	public String toString() {
 		String result = "ID: " + id;
-		result += ", Deck: " + deckBrand;
+		result += ", Deck: " + deck;
 		result += ", Wheel: " + wheelBrand;
 		result += ", Truck: " + truckBrand;
 		return result;
@@ -96,10 +102,10 @@ public class Skateboard {
 			return false;
 		}
 		Skateboard skate = (Skateboard)o;
-		if(this.deckBrand != null && skate.deckBrand != null) {
-			if(this.deckBrand == skate.deckBrand) {
-				result = true;			
-			} else { return false; }
+		if(this.deck != null && skate.deck != null) {
+			if(!this.deck.equals(skate.deck)) {
+				result = true;
+			}else {return false;}
 		}
 		if(this.wheelBrand != null && skate.wheelBrand != null) {
 			if(this.wheelBrand == skate.wheelBrand) {

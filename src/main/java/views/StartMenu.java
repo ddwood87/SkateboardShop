@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import data.SkateHelper;
+import models.SkateDeck;
 import models.Skateboard;
 
 /**
@@ -61,12 +62,19 @@ public class StartMenu {
 	
 	private static void addAnItem(){
 		System.out.print("Enter the deck brand: ");
-		String deck = scan.nextLine();
+		String brand = scan.nextLine();
+		System.out.print("Enter the deck width: ");
+		while(!scan.hasNextDouble()) {
+			System.out.println("Deck width must be a number.");
+			scan.nextLine();
+		}
+		double width = scan.nextDouble();
 		System.out.print("Enter the wheel brand: ");
 		String wheel = scan.nextLine();
 		System.out.print("Enter the truck brand: ");
 		String truck = scan.nextLine();
-		Skateboard skate = new Skateboard(deck, wheel, truck);
+		SkateDeck skateDeck= new SkateDeck(brand, width);
+		Skateboard skate = new Skateboard(skateDeck, wheel, truck);
 		sh.addSkate(skate);
 		System.out.println("Skateboard added");
 	}
@@ -114,7 +122,7 @@ public class StartMenu {
 			String newBrand = scan.nextLine();
 			switch(select) {
 				case 1:
-					s.setDeckBrand(newBrand);;
+					s.getDeck().setBrand(newBrand);
 					break;
 				case 2:
 					s.setWheelBrand(newBrand);
@@ -126,7 +134,9 @@ public class StartMenu {
 					
 					break;
 			}
-			s = sh.updateSkate(s);
+			if(sh.updateSkate(s)) {
+				s = sh.getSkateById(s.getId());
+			}
 			System.out.println("The edited skateboard is now :");
 			System.out.println(s.toString());
 		}

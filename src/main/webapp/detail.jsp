@@ -14,22 +14,26 @@
 
 <nav>
 <a href="index.html">Home</a>
+<a href="deckindex.html">Decks</a>
 <a href="skatelist">List Skateboards</a>
 <a href="editskate">Add a Skateboard</a>
 </nav>
+<a href="entitylist">List all entities</a>
 
 <table>
 	<tr>
 		<th>ID:</th>
-		<th>Deck:</th>
+		<th>Deck Brand:</th>
+		<th>Width:</th>
 		<th>Wheels:</th>
 		<th>Trucks:</th>
 	</tr>
 	<tr>
-		<td>${skate.getId()}</td>
-		<td>${skate.getDeckBrand()}</td>
-		<td>${skate.getWheelBrand()}</td>
-		<td>${skate.getTruckBrand()}</td>
+		<td>${skate.id}</td>
+		<td>${skate.deck.brand}</td>
+		<td>${skate.deck.width}</td>
+		<td>${skate.wheelBrand}</td>
+		<td>${skate.truckBrand}</td>
 	</tr>
 </table>
 </body>

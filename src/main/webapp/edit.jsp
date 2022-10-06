@@ -14,20 +14,28 @@
 
 <nav>
 <a href="index.html">Home</a>
+<a href="deckindex.html">Decks</a>
 <a href="skatelist">List Skateboards</a>
 <a href="editskate">Add a Skateboard</a>
 </nav>
+<a href="entitylist">List all entities</a>
+
 <form action="editskate" method="post">
 	<p class="form-title">${addOrEdit} a Skateboard:</p>
 	<input type="hidden" name="id" value="${id}" />
 	<label for="deck">Deck</label>
-	<input type="text" name="deck" value="${deck}" placeholder="Deck Brand"/>
+	<select name="deck" size="5">
+	<c:forEach items="${requestScope.allDecks}" var="var">
+		<option value="${var.id }" <c:if test="${var.id == deck.id}">selected</c:if>>${var.brand } | ${var.width }</option>
+	</c:forEach>
+	</select>
 	<label for="wheel">Wheel</label>
 	<input type="text" name="wheel" value="${wheel}" placeholder="Wheel Brand"/>
 	<label for="truck">Truck</label>
 	<input type="text" name="truck" value="${truck}" placeholder="Truck Brand"/>
 	<input type="submit" value="${addOrEdit} Skateboard"/>
 	<input type="reset">
+	<label><c:out value="${message}"/></label>
 </form>
 </body>
 </html>

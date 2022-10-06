@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import data.SkateDeckHelper;
 import data.SkateHelper;
+import models.SkateDeck;
 import models.Skateboard;
 
 /**
@@ -17,6 +19,7 @@ import models.Skateboard;
 public class editSkate extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     SkateHelper sh = new SkateHelper();
+    SkateDeckHelper sdh = new SkateDeckHelper();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -28,11 +31,12 @@ public class editSkate extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 				
 		String addOrEdit = "Edit";
-		if(request.getParameter("id") != null) {
+		String reqId = request.getParameter("id");
+		if(reqId != null && !reqId.isEmpty()) {
 			int id = Integer.parseInt(request.getParameter("id"));
 			Skateboard skate = sh.getSkateById(id);
 			request.setAttribute("id", skate.getId());
-			request.setAttribute("deck", skate.getDeckBrand());
+			request.setAttribute("deck", skate.getDeck());
 			request.setAttribute("wheel", skate.getWheelBrand());
 			request.setAttribute("truck", skate.getTruckBrand());
 		}
@@ -41,6 +45,7 @@ public class editSkate extends HttpServlet {
 		}
 		
 		request.setAttribute("addOrEdit", addOrEdit);
+		request.setAttribute("allDecks", sdh.listAllSkateDecks());
 		
 		getServletContext().getRequestDispatcher("/edit.jsp").forward(request, response);
 		
@@ -49,9 +54,13 @@ public class editSkate extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String deck = request.getParameter("deck");
+		String deckIdInput = request.getParameter("deck");
+		int deckId = Integer.parseInt(deckIdInput);
+		SkateDeck deck = sdh.getSkateDeckById(deckId);
+		
 		String wheel = request.getParameter("wheel");
 		String truck = request.getParameter("truck");
+		
 		Skateboard result = new Skateboard(deck, wheel, truck);
 		
 		var reqId = request.getParameter("id");
@@ -59,10 +68,15 @@ public class editSkate extends HttpServlet {
 			int id = Integer.parseInt(reqId);
 			Skateboard existingSkate = sh.getSkateById(id);
 			if(!result.equals(existingSkate)) {
-				existingSkate.setDeckBrand(deck);
+				existingSkate.setDeck(deck);
 				existingSkate.setWheelBrand(wheel);
 				existingSkate.setTruckBrand(truck);
-				result = sh.updateSkate(existingSkate);
+				if(sh.updateSkate(existingSkate)) {
+				 result = sh.getSkateById(existingSkate.getId());
+				} else {
+					request.setAttribute("message", "That board already exists.");
+					doGet(request, response);					
+				}
 			} else {
 				result = existingSkate;
 			}

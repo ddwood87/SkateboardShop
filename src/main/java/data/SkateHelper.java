@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
+import models.SkateDeck;
 import models.Skateboard;
 /**
  * @author dominicwood - ddwood2@dmacc.edu
@@ -15,7 +16,7 @@ import models.Skateboard;
  */
 public class SkateHelper {
 	private static EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("SkateboardShop");
-	
+	private SkateDeckHelper sdh = new SkateDeckHelper();
 	public SkateHelper() {	}
 	
 	/**
@@ -25,9 +26,9 @@ public class SkateHelper {
 	 */
 	public boolean skateExists(Skateboard skate) {
 		EntityManager em = emfactory.createEntityManager();
-		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand = :deck "
+		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deck = :deck "
 				+ "AND s.wheelBrand = :wheel AND s.truckBrand = :truck", Skateboard.class);
-		query.setParameter("deck", skate.getDeckBrand());
+		query.setParameter("deck", skate.getDeck());
 		query.setParameter("wheel", skate.getWheelBrand());
 		query.setParameter("truck", skate.getTruckBrand());
 		List<Skateboard> sl = query.getResultList();
@@ -44,6 +45,10 @@ public class SkateHelper {
 		
 		//Add new skate when it doesn't exist
 		if(!skateExists(skate)){
+			SkateDeck sd = skate.getDeck();
+			sd.addSkate(skate);
+			sdh.updateSkateDeck(sd);
+			
 			EntityManager em = emfactory.createEntityManager();
 			em.getTransaction().begin();
 			em.persist(skate);
@@ -57,8 +62,13 @@ public class SkateHelper {
 
 	public void deleteSkate(Skateboard deleteSkate) {
 		EntityManager em = emfactory.createEntityManager();
-				
-		Skateboard result = em.find(Skateboard.class, deleteSkate.getId());
+		
+		
+		Skateboard result = em.find(Skateboard.class, deleteSkate.getId()); 
+		
+		SkateDeck sd = result.getDeck();
+		sd.removeSkate(result);
+		sdh.updateSkateDeck(sd);
 		
 		em.getTransaction().begin();
 		em.remove(result);
@@ -67,20 +77,26 @@ public class SkateHelper {
 		em.close();
 	}
 
-	public Skateboard updateSkate(Skateboard updatedSkate) {
+	public boolean updateSkate(Skateboard updatedSkate) {
 		EntityManager em = emfactory.createEntityManager();
-		Skateboard result;
+		boolean result;
 		//if skate exists, delete updatedSkate, return existing
 		if(skateExists(updatedSkate)) {
-			result = getExisting(updatedSkate);
-			deleteSkate(updatedSkate);
+			Skateboard existing = getExisting(updatedSkate);
+			if(existing.getId() == updatedSkate.getId()) {
+				//Skateboard is unchanged
+				result = true;
+			//Skate exists as different id
+			}else {
+				result = false;
+			}
 		} else {
 			em.getTransaction().begin();
 			em.merge(updatedSkate);
 			em.getTransaction().commit();
-			em.close();	
-			result = updatedSkate;
+			result = true;			
 		}
+		em.close();	
 		return result;
 	}
 	
@@ -90,11 +106,8 @@ public class SkateHelper {
 		return sl;
 	}
 
-	public List<Skateboard> getSkateByDeck(String deck) {
-		EntityManager em = emfactory.createEntityManager();
-		TypedQuery<Skateboard> queryDeck = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand = :deck", Skateboard.class);
-		queryDeck.setParameter("deck", deck);
-		List<Skateboard> sl = queryDeck.getResultList();
+	public List<Skateboard> getSkateByDeck(SkateDeck deck) {
+		List<Skateboard> sl = deck.getSkates();
 		return sl;
 	}
 
@@ -131,9 +144,9 @@ public class SkateHelper {
 
 	private Skateboard getExisting(Skateboard existingSkate) {
 		EntityManager em = emfactory.createEntityManager();
-		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand = :deck "
+		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deck = :deck "
 				+ "AND s.wheelBrand = :wheel AND s.truckBrand = :truck",Skateboard.class);
-		query.setParameter("deck", existingSkate.getDeckBrand());
+		query.setParameter("deck", existingSkate.getDeck());
 		query.setParameter("wheel", existingSkate.getWheelBrand());
 		query.setParameter("truck", existingSkate.getTruckBrand());
 		Skateboard s = query.getSingleResult();
@@ -148,7 +161,7 @@ public class SkateHelper {
 		EntityManager em = emfactory.createEntityManager();
 		if(searches.size() > 0) {
 			for(String s : searches) {
-				TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand LIKE :search OR s.wheelBrand LIKE :search OR s.truckBrand LIKE :search", Skateboard.class);
+				TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deck.brand LIKE :search OR s.wheelBrand LIKE :search OR s.truckBrand LIKE :search", Skateboard.class);
 				String term = "%" + s + "%";
 				query.setParameter("search", term);
 				list.addAll(query.getResultList());		
@@ -181,12 +194,32 @@ public class SkateHelper {
 		deck = "%" + deck.trim() + "%";
 		wheel = "%" + wheel.trim() + "%";
 		truck = "%" + truck.trim() + "%";
-		//String queryString;
+		String queryString = "SELECT s FROM Skateboard s WHERE";
+		List<String> queryParams = new ArrayList<String>();
+		List<String> queryValues = new ArrayList<String>();
 		List<Skateboard> list = new ArrayList<Skateboard>();
-		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deckBrand LIKE :deck AND s.wheelBrand LIKE :wheel AND s.truckBrand LIKE :truck", Skateboard.class);
-		query.setParameter("deck", deck);
-		query.setParameter("wheel", wheel);
-		query.setParameter("truck", truck);
+		if(!deck.equals("%%")) {
+			queryString += " s.deck.brand LIKE :deck";
+			queryParams.add("deck");
+			queryValues.add(deck);
+		}
+		if(!wheel.equals("%%")) {
+			if(queryParams.size() > 0) { queryString += " AND";	}
+			queryString += " s.wheelBrand LIKE :wheel";
+			queryParams.add("wheel");
+			queryValues.add(wheel);
+		}
+		if(!truck.equals("%%")) {
+			if(queryParams.size() > 0) {queryString += " AND";}
+			queryString += " s.truckBrand LIKE :truck";
+			queryParams.add("truck");
+			queryValues.add(truck);
+		}
+		TypedQuery<Skateboard> query = em.createQuery( queryString, Skateboard.class);
+		int index = 0;
+		for(String p : queryParams) {
+			query.setParameter(p, queryValues.get(index++));
+		}
 		list.addAll(query.getResultList());
 		return list;
 	}

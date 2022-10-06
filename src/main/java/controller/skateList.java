@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import data.SkateDeckHelper;
 import data.SkateHelper;
+import models.SkateDeck;
 import models.Skateboard;
 
 /**
@@ -19,6 +22,7 @@ import models.Skateboard;
 public class skateList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     SkateHelper sh = new SkateHelper();
+    SkateDeckHelper sdh = new SkateDeckHelper();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -32,7 +36,15 @@ public class skateList extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		List<Skateboard> skates = sh.listAllSkates();
+		List<Skateboard> skates = new ArrayList<Skateboard>();
+		String idStr = (String)request.getParameter("id");
+		if(idStr == null || idStr.isEmpty()) {
+			 skates = sh.listAllSkates();
+		} else {
+			int id = Integer.parseInt(idStr);
+			SkateDeck sd = sdh.getSkateDeckById(id);
+			skates = sh.getSkateByDeck(sd);
+		}
 		request.setAttribute("skateboards", skates);
 		boolean noSkates = false;
 		if(skates.size() == 0) { noSkates = true;}
@@ -45,18 +57,10 @@ public class skateList extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String deck = "";
-		String wheel = "";
-		String truck = "";
-		if(request.getParameter("searchdeck") != null) {
-			deck = (String)request.getParameter("searchdeck");
-		}
-		if(request.getParameter("searchwheel") != null) {
-			wheel = (String)request.getParameter("searchwheel");
-		}
-		if(request.getParameter("searchtruck") != null) {
-			truck = (String)request.getParameter("searchtruck");
-		}
+		String deck = request.getParameter("searchdeck");
+		String wheel = request.getParameter("searchwheel");
+		String truck = request.getParameter("searchtruck");
+
 		if(deck == "" && wheel == "" && truck == "") {
 			doGet(request, response);
 		} else {
