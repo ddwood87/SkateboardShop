@@ -84,7 +84,7 @@ public class editSkate extends HttpServlet {
 		else {
 			Skateboard addSkate = new Skateboard(deck, wheel, truck);
 			sh.addSkate(addSkate);
-			result = addSkate;
+			result = sh.getExisting(addSkate);
 		}
 		
 		request.setAttribute("skate", result);

@@ -47,10 +47,11 @@ public class SkateHelper {
 		if(!skateExists(skate)){
 			SkateDeck sd = skate.getDeck();
 			sd.addSkate(skate);
-			sdh.updateSkateDeck(sd);
+			//sdh.updateSkateDeck(sd);
 			
 			EntityManager em = emfactory.createEntityManager();
 			em.getTransaction().begin();
+			em.merge(sd);
 			em.persist(skate);
 			em.getTransaction().commit();
 			em.close();
@@ -142,7 +143,7 @@ public class SkateHelper {
 		return s;
 	}
 
-	private Skateboard getExisting(Skateboard existingSkate) {
+	public Skateboard getExisting(Skateboard existingSkate) {
 		EntityManager em = emfactory.createEntityManager();
 		TypedQuery<Skateboard> query = em.createQuery("SELECT s FROM Skateboard s WHERE s.deck = :deck "
 				+ "AND s.wheelBrand = :wheel AND s.truckBrand = :truck",Skateboard.class);
